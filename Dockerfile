@@ -119,6 +119,10 @@ LABEL maintainer="Denys Zhdanov <denis.zhdanov@gmail.com>"
 
 ENV STATSD_INTERFACE udp
 
+# set up users
+RUN addgroup -g 308 telemetry \
+ && adduser -D -u 308 -G telemetry -H -h /opt/graphite telemetry
+
 COPY conf /
 
 # copy /opt from build image
