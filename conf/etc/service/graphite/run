@@ -2,6 +2,7 @@
 
 if folder_empty /var/log/graphite; then
 	mkdir -p /var/log/graphite
+	chown -R telemetry:telemetry /var/log/graphite
 	touch /var/log/syslog
 fi
 
@@ -15,6 +16,7 @@ fi
 
 if folder_empty /opt/graphite/storage; then
 	mkdir -p /opt/graphite/storage/whisper
+	chown -R telemetry:telemetry /opt/graphite/storage
 fi
 
 if [ ! -e "/opt/graphite/storage/graphite.db" ]; then
@@ -31,6 +33,7 @@ if folder_empty /opt/graphite/webapp/graphite/functions/custom; then
 	touch /opt/graphite/webapp/graphite/functions/custom/__init__.py
 fi
 
+
 export GRAPHITE_WSGI_PROCESSES=${GRAPHITE_WSGI_PROCESSES:-4}
 export GRAPHITE_WSGI_THREADS=${GRAPHITE_WSGI_THREADS:-1}
 export GRAPHITE_WSGI_REQUEST_TIMEOUT=${GRAPHITE_WSGI_REQUEST_TIMEOUT:-65}
@@ -40,7 +43,8 @@ export PYTHONPATH=/opt/graphite/webapp
 
 sv start nginx || exit 1
 
-exec sudo -u telemetry /opt/graphite/bin/gunicorn wsgi --preload --pythonpath=/opt/graphite/webapp/graphite \
+# exec sudo -u telemetry /opt/graphite/bin/gunicorn wsgi --preload --pythonpath=/opt/graphite/webapp/graphite \
+exec /opt/graphite/bin/gunicorn wsgi --preload --pythonpath=/opt/graphite/webapp/graphite \
     --workers=${GRAPHITE_WSGI_PROCESSES} \
     --threads=${GRAPHITE_WSGI_THREADS} \
     --limit-request-line=${GRAPHITE_WSGI_REQUEST_LINE} \

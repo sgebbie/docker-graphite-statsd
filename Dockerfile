@@ -119,14 +119,21 @@ LABEL maintainer="Denys Zhdanov <denis.zhdanov@gmail.com>"
 
 ENV STATSD_INTERFACE udp
 
-# set up users
-RUN addgroup -g 308 telemetry \
- && adduser -D -u 308 -G telemetry -H -h /opt/graphite telemetry
-
 COPY conf /
 
 # copy /opt from build image
 COPY --from=build /opt /opt
+
+# set up users
+RUN true \
+ && apk add --no-cache \
+   sudo \
+ && addgroup -g 308 telemetry \
+ && adduser -D -u 308 -G telemetry -H -h /opt/graphite telemetry \
+ && chown -R telemetry:telemetry /opt/graphite \
+ && chown -R telemetry:telemetry /var/log/graphite \
+ && touch /var/log/gunicorn.log \
+ && chown -R telemetry:telemetry /var/log/gunicorn.log
 
 # defaults
 EXPOSE 80 2003-2004 2013-2014 2023-2024 8080 8125 8125/udp 8126
