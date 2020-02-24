@@ -40,7 +40,7 @@ export PYTHONPATH=/opt/graphite/webapp
 
 sv start nginx || exit 1
 
-exec /opt/graphite/bin/gunicorn wsgi --preload --pythonpath=/opt/graphite/webapp/graphite \
+exec sudo -u telemetry /opt/graphite/bin/gunicorn wsgi --preload --pythonpath=/opt/graphite/webapp/graphite \
     --workers=${GRAPHITE_WSGI_PROCESSES} \
     --threads=${GRAPHITE_WSGI_THREADS} \
     --limit-request-line=${GRAPHITE_WSGI_REQUEST_LINE} \

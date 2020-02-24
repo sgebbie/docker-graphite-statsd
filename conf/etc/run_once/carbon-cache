@@ -15,4 +15,5 @@ for i in $GRAPHITE_CARBONLINK_HOSTS; do
     sed "s/start/--instance=$INSTANCE_ID start/" /etc/service/carbon/run > $S/run
     sed "s/carbon.log/carbon-$INSTANCE_ID.log/" /etc/service/carbon/log/run > $S/log/run
     chmod +x $S/run $S/log/run
+    chown -R telemetry:telemetry $S
 done
